@@ -1,5 +1,6 @@
 #include <iostream>
-
+#ifndef string
+#define string
 class String
 {
 public:
@@ -316,3 +317,5 @@ int String::find(char ch)
     }
     return -1;
 }
+
+#endif string
