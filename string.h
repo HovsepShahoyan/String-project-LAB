@@ -4,23 +4,25 @@
 #include <iterator>
 #include <cstring>
 
-class StringIterator {
-public:
-    StringIterator(char* ptr);
-    StringIterator& operator++();
-    StringIterator operator++(int) ;
-    StringIterator& operator--();
-    StringIterator operator--(int);
-    char& operator[](int index);
-    char* operator->();
-    char& operator*();
-    bool operator ==(const StringIterator& other);
-    bool operator !=(const StringIterator& other);
-private:
-    char* m_Ptr;
-};
-
 class String {
+    public: //Iterator class
+    class StringIterator {
+    public: //Constructor
+        StringIterator(char* ptr);
+    public: //Operators
+        StringIterator& operator++();
+        StringIterator& operator++(int) ;
+        StringIterator& operator--();
+        StringIterator& operator--(int);
+        char& operator[](int index);
+        char* operator->();
+        char& operator*();
+        bool operator ==(const StringIterator& other);
+        bool operator !=(const StringIterator& other);
+    private:
+        char* m_Ptr;
+    };
+// Class String    
 public: //Constructors
     String();
     String(char* m_arr);
@@ -33,6 +35,7 @@ public: //Constructors
 public: //Functions
     String operator+(String obj);
     String operator+(char ch);
+    String operator+(String obj);
     void operator+=(String obj);
     bool operator==(String obj);
     bool operator<(String obj);

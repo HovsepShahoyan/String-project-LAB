@@ -1,49 +1,49 @@
 #include "string.h"
 #include <iostream>
   
-StringIterator::StringIterator(char* ptr) {
+String::StringIterator::StringIterator(char* ptr) {
     m_Ptr = ptr;
 }
 
-StringIterator& StringIterator::operator++() {
+String::StringIterator& String::StringIterator::operator++() {
     m_Ptr++;
     return *this;
 }
 
-StringIterator StringIterator::operator++(int) {
+String::StringIterator& String::StringIterator::operator++(int) {
     StringIterator iterator = *this;
     ++(*this);
     return iterator;
 }
 
-StringIterator& StringIterator::operator--() {
+String::StringIterator& String::StringIterator::operator--() {
     m_Ptr--;
     return *this;
 }
 
-StringIterator StringIterator::operator--(int) {
+String::StringIterator& String::StringIterator::operator--(int) {
     StringIterator iterator = *this;
     --(*this);
     return iterator;
 }   
 
-char& StringIterator::operator[](int index) {
+char& String::StringIterator::operator[](int index) {
     return *(m_Ptr + index);
 }
 
-char* StringIterator::operator->() {
+char* String::StringIterator::operator->() {
     return m_Ptr;
 }
 
-char& StringIterator::operator*() {
+char& String::StringIterator::operator*() {
     return *m_Ptr;
 }
 
-bool StringIterator::operator==(const StringIterator& other) {
+bool String::StringIterator::operator==(const StringIterator& other) {
     return m_Ptr == other.m_Ptr;
 }
     
-bool StringIterator::operator!=(const StringIterator& other) {
+bool String::StringIterator::operator!=(const StringIterator& other) {
     return m_Ptr != other.m_Ptr;
 }
 
@@ -250,7 +250,7 @@ void String::pop_back() {
     _arr[_size] = '\0';
 }
 
-StringIterator String::find(char ch) {
+String::StringIterator String::find(char ch) {
     for(int i = 0; i < _size; i++) {
         if(_arr[i] == ch) {
             return StringIterator(_arr+i);
@@ -281,7 +281,7 @@ int String::get_size() {
     return _size;
 }
 
-StringIterator String::operator[](int pos) {
+String::StringIterator String::operator[](int pos) {
     return StringIterator(_arr + pos);
 }
 
