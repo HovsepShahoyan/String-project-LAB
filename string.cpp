@@ -178,12 +178,12 @@ String::~String(){
     _arr = nullptr;
 }
 
-String String::sub_string(int pos, int n) {
+String String::sub_string(StringIterator pos, int n) {
     String _tmp;
-    _tmp._cap = _cap;
-    for(int i = pos; i < _size - pos - n; i++) {
-        _tmp._arr[i - pos] = _arr[i];
-        _tmp._size++;  
+    int i = 0;
+    for(StringIterator it = pos; it != this->end(); it++){
+        _tmp._arr[i] = *it;
+        i++;
     }
     return _tmp;
 }
@@ -281,8 +281,8 @@ int String::get_size() {
     return _size;
 }
 
-char& String::operator[](int pos) {
-    return _arr[pos];
+StringIterator String::operator[](int pos) {
+    return StringIterator(_arr + pos);
 }
 
 void String::resize(int n) {

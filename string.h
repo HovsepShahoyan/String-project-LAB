@@ -39,8 +39,8 @@ public: //Functions
     bool operator>(String obj);
     bool operator>=(String obj);
     bool operator<=(String obj);
-    char& operator[](int pos);
-    String sub_string(int pos, int n);
+    StringIterator operator[](int pos);
+    String sub_string(StringIterator pos, int n);
     String sub_string(int n);
     void insert(int pos, String obj);
     void insert(int pos, char ch);
