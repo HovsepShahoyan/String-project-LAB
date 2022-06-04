@@ -1,58 +1,53 @@
 #include "string.h"
 #include <iostream>
   
-String::StringIterator::StringIterator(char* ptr) {
-    m_Ptr = ptr;
+String::Iterator::Iterator(char* ptr) {
+    m_ptr = ptr;
 }
 
-String::StringIterator& String::StringIterator::operator++() {
-    m_Ptr++;
+String::Iterator& String::Iterator::operator++() {
+    m_ptr++;
     return *this;
 }
 
-String::StringIterator& String::StringIterator::operator++(int) {
-    StringIterator iterator = *this;
-    ++(*this);
-    return iterator;
-}
-
-String::StringIterator& String::StringIterator::operator--() {
-    m_Ptr--;
+String::Iterator& String::Iterator::operator++(int) {
+    ++m_ptr;
     return *this;
 }
 
-String::StringIterator& String::StringIterator::operator--(int) {
-    StringIterator iterator = *this;
-    --(*this);
-    return iterator;
+String::Iterator& String::Iterator::operator--() {
+    m_ptr--;
+    return *this;
+}
+
+String::Iterator& String::Iterator::operator--(int) {
+    --m_ptr;
+    return *this;
 }   
 
-char& String::StringIterator::operator[](int index) {
-    return *(m_Ptr + index);
+char* String::Iterator::operator->() {
+    return m_ptr;
 }
 
-char* String::StringIterator::operator->() {
-    return m_Ptr;
+char& String::Iterator::operator*() {
+    return *m_ptr;
 }
 
-char& String::StringIterator::operator*() {
-    return *m_Ptr;
-}
-
-bool String::StringIterator::operator==(const StringIterator& other) {
-    return m_Ptr == other.m_Ptr;
+bool String::Iterator::operator==(const Iterator& other) {
+    return m_ptr == other.m_ptr;
 }
     
-bool String::StringIterator::operator!=(const StringIterator& other) {
-    return m_Ptr != other.m_Ptr;
+bool String::Iterator::operator!=(const Iterator& other) {
+    return m_ptr != other.m_ptr;
 }
 
-String::String() = default;
-
 String::String(char* m_arr) {
-    _arr = m_arr;
-    _size = strlen(_arr);
-    _cap = _size;
+    _size = strlen(m_arr);
+    _cap = _size * 2;
+    _arr = new char[_cap];
+    for(int i = 0; i < _size; i++) {
+        _arr[i] = m_arr[i];
+    }
 }
 
 String::String(const String& obj) {
@@ -77,6 +72,8 @@ String& String::operator=(const String& obj) {
     }
     _size = obj._size;
     _cap = obj._cap;
+    delete[] _arr;
+    _arr = nullptr;
     _arr = new char[obj._cap];
     for(int i = 0; i < obj._size; i++) {
         _arr[i] = obj._arr[i];
@@ -85,18 +82,18 @@ String& String::operator=(const String& obj) {
 }
 
 String& String::operator=(String&& obj) {
-    if(this != nullptr) {
+    delete[] _arr;
+    _arr = nullptr;
     std::swap(_size, obj._size);
     std::swap(_cap, obj._cap);
-    std::swap(_arr,obj._arr);
-    } else { _size = obj._size;
-            _cap = obj._cap;
-            _arr = obj._arr;
+    _arr = new char[_cap];
+    for(int i = 0; i < _size; i++) {
+        _arr[i] = obj._arr[i];
     }
     return *this;
 }
 
-String String::operator+(String obj){
+String String::operator+(String obj) {
     char* m_arr = new char[_cap + obj._cap];
     for(int i = 0; i < _size + obj._size; i++) {
         if(i < _size) {
@@ -112,9 +109,22 @@ String String::operator+(String obj){
 void String::operator+=(String obj) {
     if(_size + obj._size >= _cap) {
         _cap*=2;
+        char* m_arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            m_arr[i] = _arr[i];
+        }
+        delete[] _arr;
+        _arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            _arr[i] = m_arr[i];
+        }
+        delete[] m_arr;
+        m_arr = nullptr;
     }
-    for(int i = _size; i < _size + obj._size; i++) {
-        _arr[i] = obj._arr[i - _size];
+    int size_copy = _size;
+    for(int i = size_copy; i < size_copy + obj._size; i++) {
+        _arr[i] = obj._arr[i - size_copy];
+        _size++;
     }
 }
 
@@ -126,7 +136,7 @@ bool String::operator<=(String obj) {
             return false;
         }
     }
-    return false;
+    return true;
 }
 
 bool String::operator>=(String obj) {
@@ -137,10 +147,13 @@ bool String::operator>=(String obj) {
             return false;
         }
     }
-    return false;
+    return true;
 }
 
 bool String::operator==(String obj) {
+    if(_size != obj._size) {
+        return false;
+    }
     for (int i = 0, j = 0; i < _size && j < obj._size; i++, j++) {
         if (_arr[i] == obj._arr[i]) {
             continue;
@@ -154,6 +167,9 @@ bool String::operator==(String obj) {
 bool String::operator<(String obj) {
     for (int i = 0, j = 0; i < _size && j < obj._size; i++, j++) {
         if (_arr[i] < obj._arr[i]) {
+            return true;
+        }
+        if (_arr[i] == obj._arr[i]) {
             continue;
         } else {
             return false;
@@ -165,6 +181,9 @@ bool String::operator<(String obj) {
 bool String::operator>(String obj) {
     for (int i = 0, j = 0; i < _size && j < obj._size; i++, j++) {
         if (_arr[i] > obj._arr[i]) {
+            return true;
+        }
+        else if(_arr[i] == obj._arr[i]) {
             continue;
         } else {
             return false;
@@ -178,12 +197,17 @@ String::~String(){
     _arr = nullptr;
 }
 
-String String::sub_string(StringIterator pos, int n) {
+String String::sub_string(Iterator pos, int n) {
     String _tmp;
-    int i = 0;
-    for(StringIterator it = pos; it != this->end(); it++){
-        _tmp._arr[i] = *it;
-        i++;
+    _tmp._cap = _cap;
+    _tmp._size = n;
+    _tmp._arr = new char[n];
+    Iterator it = this->end();
+    for(int i = 0; pos != it ; ++pos, ++i){
+        _tmp._arr[i] = *pos;
+        if( i == n - 1) {
+            break;
+        }
     }
     return _tmp;
 }
@@ -191,9 +215,10 @@ String String::sub_string(StringIterator pos, int n) {
 String String::sub_string(int n) {
      String _tmp;
     _tmp._cap = _cap;
-    for(int i = 0; i < _size - n; i++) {
+    _tmp._size = n;
+    _tmp._arr = new char[_cap];
+    for(int i = 0; i < n; i++) {
         _tmp._arr[i] = _arr[i];
-        _tmp._size++;  
     }
     return _tmp;
 }   
@@ -201,6 +226,17 @@ String String::sub_string(int n) {
 void String::insert(int pos, String obj) {
     if(obj._size + _size >= _cap) {
         _cap*=2;
+        char* m_arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            m_arr[i] = _arr[i];
+        }
+        delete[] _arr;
+        _arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            _arr[i] = m_arr[i];
+        }
+        delete[] m_arr;
+        m_arr = nullptr;
     }
     char* m_arr = new char[_cap];
     for(int i = 0; i < _size + obj._size; i++) {
@@ -212,7 +248,9 @@ void String::insert(int pos, String obj) {
             m_arr[i] = _arr[i - obj._size];
         }
     }
-    *_arr = *m_arr;
+    for(int i = 0; i < obj._size + _size; i++) {
+        _arr[i] = m_arr[i];
+    }
     delete[] m_arr;
     m_arr = nullptr; 
 }
@@ -220,6 +258,17 @@ void String::insert(int pos, String obj) {
 void String::insert(int pos, char ch) {
     if(_size == _cap) {
         _cap = _cap * 2;
+        char* m_arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            m_arr[i] = _arr[i];
+        }
+        delete[] _arr;
+        _arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            _arr[i] = m_arr[i];
+        }
+        delete[] m_arr;
+        m_arr = nullptr;
     }
     char* m_arr = new char[_size+1];
     for(int i = 0; i < _size + 1; i++) {
@@ -240,28 +289,39 @@ void String::insert(int pos, char ch) {
 void String::push_back(char ch) {
     if( _size == _cap) {
         _cap*=2;
+         char* m_arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            m_arr[i] = _arr[i];
+        }
+        delete[] _arr;
+        _arr = new char[_cap];
+        for(int i = 0; i < _size; i++) {
+            _arr[i] = m_arr[i];
+        }
+        delete[] m_arr;
+        m_arr = nullptr;
     } 
+    _arr[_size+1] = _arr[_size];
     _arr[_size] = ch;
-    _arr[_size+1] = '\0';
+    _size++;
 }
 
 void String::pop_back() {
+    _arr[_size-1] = _arr[_size];
     _size--;
-    _arr[_size] = '\0';
 }
 
-String::StringIterator String::find(char ch) {
+String::Iterator String::find(char ch) {
     for(int i = 0; i < _size; i++) {
         if(_arr[i] == ch) {
-            return StringIterator(_arr+i);
+            return Iterator(_arr+i);
         }
     }
-    return StringIterator(_arr + _size);
+    return Iterator(_arr + _size);
 }
 
 bool String::empty() const{
-    if(this->_size == 0) { return true; }
-    return false;
+    return this->_size == 0;
 }
 
 void String::clear() {
@@ -277,12 +337,12 @@ void String::replace(int pos, String obj) {
     }
 }
 
-int String::get_size() {
+int String::get_size() const{
     return _size;
 }
 
-String::StringIterator String::operator[](int pos) {
-    return StringIterator(_arr + pos);
+String::Iterator String::operator[](int pos) {
+    return Iterator(_arr + pos);
 }
 
 void String::resize(int n) {
@@ -291,29 +351,35 @@ void String::resize(int n) {
         m_arr[i] = _arr[i];
     }
     *_arr = *m_arr;
+    delete m_arr;
     m_arr = nullptr;
-    delete[] m_arr;
 }
 
 bool String::contains(String obj) {
-    bool check = false;
     for(int i = 0; i < _size; i++) {
-        if(check == true && _arr[i] != obj._arr[i]) {
+        if(_arr[i] != obj._arr[i]) {
             return false;
         }
         if(_arr[i] == obj._arr[i]) {
-            return true;
+            continue;
         }
     }
-    return false;
+    return true;
 }
 
 int String::compare(String obj){
-    if(obj._size < _size) {
+    if(obj < *this) {
         return 1;
     }
-    if(obj._size > _size) {
+    if(obj > *this) {
         return -1;
     } return 0; 
 }
 
+String::Iterator String::end() {
+    return Iterator(_arr + _size);
+}
+
+String::Iterator String::begin() {
+    return Iterator(_arr + 0 );
+}

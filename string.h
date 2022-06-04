@@ -5,26 +5,24 @@
 #include <cstring>
 
 class String {
-    public: //Iterator class
-    class StringIterator {
-    public: //Constructor
-        StringIterator(char* ptr);
-    public: //Operators
-        StringIterator& operator++();
-        StringIterator& operator++(int) ;
-        StringIterator& operator--();
-        StringIterator& operator--(int);
-        char& operator[](int index);
+    public: 
+    class Iterator {
+    public: 
+        Iterator(char* ptr);
+    public:
+        Iterator& operator++();
+        Iterator& operator++(int) ;
+        Iterator& operator--();
+        Iterator& operator--(int);
         char* operator->();
         char& operator*();
-        bool operator ==(const StringIterator& other);
-        bool operator !=(const StringIterator& other);
+        bool operator ==(const Iterator& other);
+        bool operator !=(const Iterator& other);
     private:
-        char* m_Ptr;
-    };
-// Class String    
-public: //Constructors
-    String();
+        char* m_ptr;
+    };    
+public: 
+    String() = default;
     String(char* m_arr);
     String(const String& obj);
     String(String&& obj);
@@ -32,18 +30,17 @@ public: //Constructors
     String& operator=(String&& obj);
     ~String();
 
-public: //Functions
+public: 
     String operator+(String obj);
     String operator+(char ch);
-    String operator+(String obj);
     void operator+=(String obj);
     bool operator==(String obj);
     bool operator<(String obj);
     bool operator>(String obj);
     bool operator>=(String obj);
     bool operator<=(String obj);
-    StringIterator operator[](int pos);
-    String sub_string(StringIterator pos, int n);
+    Iterator operator[](int pos);
+    String sub_string(Iterator pos, int n);
     String sub_string(int n);
     void insert(int pos, String obj);
     void insert(int pos, char ch);
@@ -51,26 +48,23 @@ public: //Functions
     void pop_back();
     bool empty() const;
     void clear();
-    StringIterator find(char ch);
+    Iterator find(char ch);
     void replace(int pos, String obj);
-    int get_size();
+    int get_size() const;
     void resize(int n);
     bool contains(String obj);
     bool contains(char ch);
     int compare(String obj);
-    StringIterator end() {
-        return StringIterator(_arr +_size);
-    }
-    StringIterator begin(){
-         return StringIterator(_arr);
-    }
-
+    Iterator end();
+    Iterator begin();
     friend std::ostream &operator<<(std::ostream &out, const String &obj)
     {
-        out << obj._arr << '\n';
+        for(int i = 0; i < obj._size; i++) {
+        out << obj._arr[i];
+        }
+        std::cout << std::endl;
         return out;
     }
-
 private:
     char* _arr;
     int _size;
