@@ -14,11 +14,11 @@ int main()
     std::cout << "obj1" <<  obj1 << std::endl;
     std::cout << "obj3" << obj3 << std::endl;
     std::cout << "obj4" << obj4 << std::endl;
-    for (int i = 0; i < 90; i++) {
+    for (int i = 0; i < 10; i++) {
         obj1.push_back('h');
     }
     std::cout << "obj1(push)" << obj1 << std::endl;
-    for(int i = 0; i < 90; i++) {
+    for(int i = 0; i < 10; i++) {
         obj1.pop_back();
     }
     std::cout << "obj1(pop)" << obj1 << std::endl;
@@ -27,7 +27,6 @@ int main()
     std::cout << "compare" <<  obj1.compare(obj3) << std::endl;
     std::cout << "size" << obj1.get_size() << std::endl;
     std::cout << "sub_string" << obj1.sub_string(5) << std::endl;
-    std::cout << "obj2" << obj2 << "obj1(insert)" << obj1 << std::endl;
     std::cout << "obj2" << obj2 << "obj1(+=)" << obj1 << std::endl;
     std::cout << "==" << obj1.operator==(obj3) << std::endl;
     std::cout << ">=" << obj1.operator>=(obj3) << std::endl; 
@@ -49,4 +48,13 @@ int main()
     std::cout << obj1.operator<=(obj2) << std::endl;
     std::cout << *(obj1.find('H')) <<  std::endl;
     std::cout << obj1.compare(obj2);
+    obj3 = obj1.replace(2, obj2);
+    std::cout << obj3;
+    it = obj1.begin(); 
+    std::cout << obj1;
+    std::cout << obj1.replace(3, obj2);
+    std::cout << obj1 + obj2 + obj1;
+    obj3 = obj1 + obj2 + obj1;
+    std::cout << obj3.sub_string(7);
+    std::cout << obj1.contains(obj2);
 }
