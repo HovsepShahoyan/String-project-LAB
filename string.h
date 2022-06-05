@@ -42,14 +42,15 @@ public:
     Iterator operator[](int pos) const;
     String sub_string(Iterator pos, int n);
     String sub_string(int n);
-    String insert(Iterator pos, String obj);
-    void insert(Iterator pos, char ch);
+    String insert(Iterator pos, String& obj);
+    String insert(Iterator pos, char ch);
     void push_back(char ch);
     void pop_back();
     bool empty() const;
     void clear();
     Iterator find(char ch) const;
-    String replace(int pos, String obj);
+    String replace(int pos, String& obj);
+    String replace(Iterator first, Iterator last, String& obj);
     int get_size() const;
     void resize(int n);
     bool contains(String obj) const;
