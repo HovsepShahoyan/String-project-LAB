@@ -62,12 +62,13 @@ int main()
     ++it1;
     std::cout << obj1.insert(it1, obj2);
     std::cout << obj1.insert(it1, 'G');
-    String::Iterator it2 = obj1.begin();
-    String::Iterator it3 = obj1.begin();
-    it3++;
-    it3++;
-    ++it3;
-    ++it3;
-    ++it2;
-    std::cout << obj1.replace(it2, it3, obj2) << "Debug";
+    // IT IS FOR CHECKING REPLACE WHICH WORKS ONLY WHEN WE GIVE TO IT STRING OF KNOWN SIZE
+    // String::Iterator it2 = obj1.begin();
+    // String::Iterator it3 = obj1.begin();
+    // it3++;
+    // it3++;
+    // ++it3;
+    // ++it3;
+    // ++it2;
+    // std::cout << obj1.replace(it2, it3, obj2) << "Debug";
 }
