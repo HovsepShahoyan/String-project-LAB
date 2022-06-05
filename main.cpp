@@ -60,15 +60,20 @@ int main()
     String::Iterator it1 = obj1.begin();
     ++it1;
     ++it1;
-    std::cout << obj1.insert(it1, obj2);
-    std::cout << obj1.insert(it1, 'G');
-    // IT IS FOR CHECKING REPLACE WHICH WORKS ONLY WHEN WE GIVE TO IT STRING OF KNOWN SIZE
-    // String::Iterator it2 = obj1.begin();
-    // String::Iterator it3 = obj1.begin();
-    // it3++;
-    // it3++;
-    // ++it3;
-    // ++it3;
-    // ++it2;
-    // std::cout << obj1.replace(it2, it3, obj2) << "Debug";
+    //IT IS FOR CHECKING REPLACE WHICH WORKS ONLY WHEN WE GIVE TO IT STRING OF KNOWN SIZE
+    String::Iterator it2 = obj1.begin();
+    String::Iterator it3 = obj1.begin();
+    it3++;
+    it3++;
+    ++it3;
+    ++it3;
+    ++it2;
+    std::cout << obj1.replace(it2, it3, obj2);
+    String::Iterator it4 = obj1.begin();
+    std::cout << *(obj1.insert(3, obj2));
+    String::Iterator it5 = obj1.begin();
+    String::Iterator it6 = obj1.begin();
+    std::cout << obj1.insert(it5, obj2);
+    std::cout << obj1.insert(it6, 'G');
+    std::cout << *(obj1.at(5));
 }

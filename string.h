@@ -40,10 +40,12 @@ public:
     bool operator>=(String obj);
     bool operator<=(String obj);
     Iterator operator[](int pos) const;
+    Iterator at(int pos) const;
     String sub_string(Iterator pos, int n);
     String sub_string(int n);
-    String insert(Iterator pos, String& obj);
-    String insert(Iterator pos, char ch);
+    String& insert(Iterator pos, String& obj);
+    String& insert(Iterator pos, char ch);
+    Iterator insert(int pos, String& obj);
     void push_back(char ch);
     void pop_back();
     bool empty() const;

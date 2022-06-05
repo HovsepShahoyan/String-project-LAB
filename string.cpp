@@ -1,5 +1,6 @@
 #include "string.h"
 #include <iostream>
+#include <stdexcept>
 
 String::Iterator::Iterator(char * ptr) {
   m_ptr = ptr;
@@ -43,7 +44,7 @@ bool String::Iterator::operator!=(const Iterator & other) {
 
 String::String(char* m_arr) {
   _size = strlen(m_arr);
-  _cap = _size * 2;
+  _cap = _size;
   _arr = new char[_cap];
   for (int i = 0; i < _size; i++) {
     _arr[i] = m_arr[i];
@@ -198,6 +199,13 @@ String::~String() {
   }
 }
 
+String::Iterator String::at(int pos) const{
+    if(pos > _size) {
+        throw std::out_of_range("Out of range Exception");
+    }
+    return Iterator(_arr + pos);
+}
+
 String String::sub_string(Iterator pos, int n) {
   String _tmp;
   _tmp._cap = _cap;
@@ -224,43 +232,68 @@ String String::sub_string(int n) {
   return _tmp;
 }
 
-String String::insert(Iterator pos, String& obj) {
-    String tmp;
-    tmp._size = _size + obj._size;
-    tmp._cap = _cap + obj._cap;
-    tmp._arr = new char[tmp._size];
+String& String::insert(Iterator pos, String& obj) {
+    char* m_arr = new char[_size + obj._size];
+    _cap = _cap + obj._cap;
+    _size = _size + obj._size;
     int i = 0;
     for(Iterator it = this->begin(); it != pos; ++it) {
-        tmp._arr[i] = *it;
+        m_arr[i] = *it;
         i++; 
     }
     for(Iterator it = obj.begin(); it != obj.end(); ++it) {
-        tmp._arr[i] = *it;
+        m_arr[i] = *it;
         i++;
     }
     for(Iterator it = pos; it != this->end(); ++it) {
-        tmp._arr[i] = *it;    
+        m_arr[i] = *it;    
         i++;
     }
-    return tmp;
+    delete[] _arr;
+    _arr = m_arr;
+    m_arr = nullptr;
+    return *this;
 }
 
-String String::insert(Iterator pos, char ch) {
-    String tmp;
-    tmp._cap = _cap + 1;
-    tmp._size = _size + 1;
-    tmp._arr = new char[tmp._size];
+String& String::insert(Iterator pos, char ch) {
+    char* m_arr = new char[_size + 1];
+    _cap = _cap + 1;
+    _size = _size + 1;
     int i = 0;
     for(Iterator it = this->begin(); it != this->end(); ++it) {
-        tmp._arr[i] = *it;
+        m_arr[i] = *it;
         i++;
         if(it == pos) {
-            tmp._arr[i] = ch;
+            m_arr[i] = ch;
             i++;
             continue;
         }
     }
-    return tmp;
+    delete[] _arr;
+    _arr = m_arr;
+    m_arr = nullptr;
+    return *this;
+}
+
+String::Iterator String::insert(int pos, String& obj) {
+    char* m_arr = new char[_size + obj._size];
+    _cap = _cap + obj._cap;
+    _size = _size + obj._size;
+    for(int i = 0; i < _size; i++) {
+        if(i < pos) {
+            m_arr[i] = _arr[i];
+            continue;  
+        }
+        if(i > pos + obj._size - 1) {
+            m_arr[i] = _arr[i - obj._size];
+            continue;
+        }
+        m_arr[i] = obj._arr[i - pos];
+    }
+      delete[] _arr;
+    _arr = m_arr;
+    m_arr = nullptr;
+    return Iterator(_arr + pos);
 }
 
 void String::push_back(char ch) {
