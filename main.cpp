@@ -73,4 +73,7 @@ int main() {
    // std::cout << obj1.insert(it5, obj2);
    // std::cout << obj1.insert(it6, 'G');
    std::cout << *(obj1.at(5));
+   std::cout << std::endl;
+   obj1 = 'j' + obj1;
+   std::cout << obj1;
 }

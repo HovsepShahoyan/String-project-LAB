@@ -9,9 +9,10 @@ String::Iterator& String::Iterator::operator++() {
    return *this;
 }
 
-String::Iterator& String::Iterator::operator++(int) {
-   ++m_ptr;
-   return *this;
+String::Iterator String::Iterator::operator++(int) {
+   Iterator it = *this;
+   ++(*this);
+   return it;
 }
 
 String::Iterator& String::Iterator::operator--() {
@@ -19,10 +20,15 @@ String::Iterator& String::Iterator::operator--() {
    return *this;
 }
 
-String::Iterator& String::Iterator::operator--(int) {
-   --m_ptr;
-   return *this;
+String::Iterator String::Iterator::operator--(int) {
+   Iterator it = *this;
+   --(*this);
+   return it;
 }
+
+String::Iterator String::end() { return Iterator(_arr + _size); }
+
+String::Iterator String::begin() { return Iterator(_arr + 0); }
 
 char* String::Iterator::operator->() { return m_ptr; }
 
@@ -68,7 +74,6 @@ String& String::operator=(const String& obj) {
    _size = obj._size;
    _cap = obj._cap;
    delete[] _arr;
-   _arr = nullptr;
    _arr = new char[obj._cap];
    for (int i = 0; i < obj._size; i++) {
       _arr[i] = obj._arr[i];
@@ -78,13 +83,12 @@ String& String::operator=(const String& obj) {
 
 String& String::operator=(String&& obj) {
    delete[] _arr;
-   _arr = nullptr;
    std::swap(_size, obj._size);
    std::swap(_cap, obj._cap);
-   _arr = new char[_cap];
-   for (int i = 0; i < _size; i++) {
-      _arr[i] = obj._arr[i];
-   }
+   _arr = obj._arr;
+   obj._arr = nullptr;
+   obj._size = 0;
+   obj._cap = 0;
    return *this;
 }
 
@@ -93,11 +97,10 @@ String String::operator+(String obj) {
    tmp._arr = new char[_cap + obj._cap];
    tmp._size = obj._size + _size;
    for (int i = 0; i < _size + obj._size; i++) {
-      if (i < _size) {
-         tmp._arr[i] = _arr[i];
-      } else {
-         tmp._arr[i] = obj._arr[i - _size];
-      }
+       tmp._arr[i] = _arr[i];
+   }
+   for(int i = _size; i < _size + obj._size; i++) {
+       tmp._arr[i] = obj._arr[i - _size];
    }
    return tmp;
 }
@@ -156,7 +159,7 @@ bool String::operator==(String obj) {
          return false;
       }
    }
-   return false;
+   return true;
 }
 
 bool String::operator<(String obj) {
@@ -170,7 +173,7 @@ bool String::operator<(String obj) {
          return false;
       }
    }
-   return false;
+   return true;
 }
 
 bool String::operator>(String obj) {
@@ -183,7 +186,7 @@ bool String::operator>(String obj) {
          return false;
       }
    }
-   return false;
+   return true;
 }
 
 String::~String() {
@@ -374,12 +377,12 @@ String::Iterator String::operator[](int pos) const {
 }
 
 void String::resize(int n) {
-   char* m_arr = new char[n];
+   char* m_arr = new char[_size + n];
    for (int i = 0; i < _size; i++) {
       m_arr[i] = _arr[i];
    }
-   *_arr = *m_arr;
-   delete m_arr;
+   delete[] _arr;
+   _arr = m_arr;
    m_arr = nullptr;
 }
 
@@ -395,6 +398,7 @@ bool String::contains(String obj) const {
                check = true;
             } else {
                check = false;
+               break;
             }
          }
          if (check == true) {
@@ -423,7 +427,3 @@ int String::compare(String obj) {
    }
    return 0;
 }
-
-String::Iterator String::end() { return Iterator(_arr + _size); }
-
-String::Iterator String::begin() { return Iterator(_arr + 0); }

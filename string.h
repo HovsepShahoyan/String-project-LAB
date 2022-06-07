@@ -5,26 +5,26 @@
 #include <iterator>
 
 class String {
-  public:
+public:
    class Iterator {
-     public:
+   public:
       Iterator(char* ptr);
 
-     public:
+   public:
       Iterator& operator++();
-      Iterator& operator++(int);
+      Iterator operator++(int);
       Iterator& operator--();
-      Iterator& operator--(int);
+      Iterator operator--(int);
       char* operator->();
       char& operator*();
       bool operator==(const Iterator& other);
       bool operator!=(const Iterator& other);
 
-     private:
+   private:
       char* m_ptr;
    };
 
-  public:
+public:
    String() = default;
    String(char* m_arr);
    String(const String& obj);
@@ -33,9 +33,20 @@ class String {
    String& operator=(String&& obj);
    ~String();
 
-  public:
+public:
    String operator+(String obj);
    String operator+(char ch);
+   friend String operator+(char ch, String& obj) {
+       String tmp;
+       tmp._arr = new char[obj._size + 1];
+       tmp._size = obj._size + 1;
+       tmp._cap = tmp._cap + 1;
+       tmp._arr[0] = ch;
+       for(int i = 1; i < tmp._size; i++) {
+ 	      tmp._arr[i] = obj._arr[i - 1];
+       }
+       return tmp;
+   }
    void operator+=(String obj);
    bool operator==(String obj);
    bool operator<(String obj);
@@ -71,7 +82,7 @@ class String {
       return out;
    }
 
-  private:
+private:
    char* _arr;
    int _size;
    int _cap;
