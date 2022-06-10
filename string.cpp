@@ -411,7 +411,11 @@ String String::replace(Iterator first, Iterator last, String& obj) {
 
 int String::get_size() const { return _size; }
 
-char& String::operator[](int pos) const {
+char& String::operator[](int pos) {
+   return _arr[pos];
+}
+
+const char& String::operator[](int pos) const {
    return _arr[pos];
 }
 

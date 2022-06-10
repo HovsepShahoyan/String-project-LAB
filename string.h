@@ -53,7 +53,8 @@ public:
    bool operator>(String obj);
    bool operator>=(String obj);
    bool operator<=(String obj);
-   char& operator[](int pos) const;
+   char& operator[](int pos);
+   const char& operator[](int pos) const;
    Iterator at(int pos) const;
    String sub_string(Iterator pos, int n);
    String sub_string(int n);
@@ -64,7 +65,6 @@ public:
    void pop_back();
    bool empty() const;
    void clear();
-   void helper();
    Iterator find(char ch) const;
    String replace(int pos, String& obj);
    String replace(Iterator first, Iterator last, String& obj);
@@ -82,6 +82,9 @@ public:
       std::cout << std::endl;
       return out;
    }
+
+private:
+void helper();
 
 private:
    char* _arr;
