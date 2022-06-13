@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include "string.h"
 
-void String::helper() {
+void String::increase_cap() {
    _cap *= 2;
    char* m_arr = new char[_cap];
    for (int i = 0; i < _size; i++) {
