@@ -32,6 +32,7 @@ public:
    String& operator=(const String& obj);
    String& operator=(String&& obj);
    ~String();
+
 public:
    String operator+(String obj);
    String operator+(char ch);
@@ -81,8 +82,10 @@ public:
       std::cout << std::endl;
       return out;
    }
+
 private:
 void increase_cap();
+
 private:
    char* _arr;
    int _size;
