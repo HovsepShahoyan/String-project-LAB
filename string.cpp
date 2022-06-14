@@ -62,6 +62,13 @@ String::String(char* m_arr) {
    }
 }
 
+String::String(std::initializer_list<char> init_list) {
+   _size = init_list.size();
+   _cap = _size;
+   _arr = new char[_size];
+   std::copy(init_list.begin(), init_list.end(), _arr);
+}
+
 String::String(const String& obj) {
    _size = obj._size;
    _cap = obj._cap;
@@ -341,7 +348,7 @@ String::Iterator String::insert(int pos, String& obj) {
 
 void String::push_back(char ch) {
    if (_size == _cap) {
-      helper();
+      increase_cap();
    }
    _arr[_size + 1] = _arr[_size];
    _arr[_size] = ch;

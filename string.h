@@ -27,6 +27,7 @@ public:
 public:
    String() = default;
    String(char* m_arr);
+   String(std::initializer_list<char> ch);
    String(const String& obj);
    String(String&& obj);
    String& operator=(const String& obj);
